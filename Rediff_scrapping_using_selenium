@@ -1,0 +1,35 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.edge.service import Service
+import openpyxl
+
+# for headless browser
+# opt = webdriver.EdgeOptions()
+# opt.headless = True
+serv_obj = Service("c://drivers//msedgedriver.exe")
+driver = webdriver.Edge(service=serv_obj,options=opt)
+file = "C:\\Users\\Aditya\\PycharmProjects\\PythonAutomation\\stepDef\\a1.xlsx"
+
+
+workbook1 = openpyxl.load_workbook(file)
+sheet1 = workbook1["Sheet1"]
+max_row = sheet1.max_row
+max_column = sheet1.max_column
+print(max_row)
+print(max_column)
+
+driver.get("https://money.rediff.com/gainers")
+gainer_body = driver.find_elements(By.XPATH, "//*[@id='leftcontainer']/table/tbody/tr/td")
+print(len(gainer_body))
+col = 5
+row = len(driver.find_elements(By.XPATH, "//*[@id='leftcontainer']/table/tbody/tr"))
+
+for r in range(1, row + 1):
+    for c in range(1, col + 1):
+        element = driver.find_element(By.XPATH,
+                                      "//*[@id='leftcontainer']/table/tbody/tr[" + str(r) + "]/td[" + str(c) + "]").text
+        sheet1.cell(r,c).value = element
+        
+    workbook1.save(file)
+
+
